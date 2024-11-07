@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Annoying Game</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<div id="stats">
+  Time: <span id="timer">0</span> sec | Score: <span id="score">0</span>
+</div>
+<button id="annoyingButton">Catch Me!</button>
+<audio id="annoyingSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+
+<script>
+  const button = document.getElementById('annoyingButton');
+  const timerDisplay = document.getElementById('timer');
+  const scoreDisplay = document.getElementById('score');
+  const sound = document.getElementById('annoyingSound');
+
+  let score = 0;
+  let timeElapsed = 0;
+  let gameEnded = false;
+  let fakeEndingShown = false;
+
+  const colors = ["#ff4444", "#44ff44", "#4444ff", "#ffff44", "#ff44ff", "#44ffff"];
+
+  const timerInterval = setInterval(() => {
+    if (gameEnded) return;
+    
+    timeElapsed++;
+    timerDisplay.textContent = timeElapsed;
+  }, 1000);
+
+  function moveButton() {
+    if (gameEnded) return;
+    
+    const maxX = window.innerWidth - button.offsetWidth;
+    const maxY = window.innerHeight - button.offsetHeight;
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+    button.style.left = `${randomX}px`;
+    button.style.top = `${randomY}px`;
+    button.style.backgroundColor = randomColor;
+    score++;
+    scoreDisplay.textContent = score;
+    sound.play();
+  }
+
+  button.addEventListener('mouseover', () => {
+    setTimeout(moveButton, 100);
+  });
+
+  function fakeEnd() {
+    alert("Congratulations! You've won!... Just kidding 😈");
+    fakeEndingShown = true;
+  }
+
+  button.addEventListener('click', () => {
+    if (gameEnded) return;
+
+    if (!fakeEndingShown) {
+      fakeEnd();
+      return;
+    }
+
+    if (timeElapsed >= 10) {
+      alert(`You finally clicked it after ${timeElapsed} seconds and a score of ${score}. Game Over for real this time!`);
+      clearInterval(timerInterval);
+      gameEnded = true;
+    }
+  });
+</script>
+
+</body>
+</html>
